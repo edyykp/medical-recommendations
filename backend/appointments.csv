@@ -1,0 +1,37 @@
+appointment_id,specialty,base_score,weight_age,weight_chronic,weight_lifestyle,recommended_for,doctor_name,clinic,duration_minutes,price
+201,Cardiology,0.82,0.3,0.5,0.2,"heart_disease, hypertension, smoker, cholesterol",Dr. Andrei Popescu,Regina Maria - Floreasca,30,280.0
+202,Diabetology,0.75,0.2,0.6,0.2,"diabetes, obesity, metabolic",Dr. Ioana Marinescu,MedLife - Grivita,40,260.0
+203,Endocrinology,0.7,0.3,0.4,0.3,"thyroid_disorder, hormonal_imbalance, vitamins_deficit",Dr. Raluca Dobre,Sanador - Victoriei,35,240.0
+204,Orthopedics,0.65,0.2,0.5,0.3,"arthritis, joint_pain, previous_fractures",Dr. Mihai Ionescu,Regina Maria - Baneasa,30,230.0
+205,Internal Medicine,0.6,0.4,0.3,0.3,"cold_start, stress_level, liver_disease",Dr. Cristina Stoica,MedLife - Titan,30,210.0
+206,Pulmonology,0.7,0.2,0.5,0.3,"lung_disease, asthma, smoker",Dr. Florin Petrescu,Regina Maria - Dorobanti,30,250.0
+207,Oncology,0.9,0.2,0.6,0.2,"cancer, chronic_disease, fatigue",Dr. Alina Georgescu,Sanador - Balcescu,45,320.0
+208,Nephrology,0.75,0.3,0.6,0.1,"kidney_disease, hypertension",Dr. Paul Cretu,Medicover - Pipera,40,270.0
+209,Hepatology,0.65,0.2,0.5,0.3,"liver_disease, alcohol_consumption",Dr. Irina Balan,Regina Maria - Cotroceni,30,240.0
+210,Rheumatology,0.7,0.3,0.5,0.2,"arthritis, joint_pain, osteoporosis",Dr. Alexandru Ilie,Sanador - Dorobanti,35,260.0
+211,Neurology,0.75,0.2,0.5,0.3,"headaches, epilepsy, stress_level",Dr. Laura Matei,MedLife - Universitate,30,280.0
+212,Psychiatry,0.7,0.2,0.3,0.5,"stress_level, hormonal_imbalance, insomnia",Dr. Radu Serban,Regina Maria - Primaverii,40,250.0
+213,Nutrition,0.6,0.1,0.4,0.5,"obesity, diabetes, lifestyle",Dr. Ioana Botez,Medicover - Aviatiei,30,200.0
+214,Family Medicine,0.5,0.3,0.2,0.5,"cold_start, vitamins_deficit, stress_level",Dr. Sorin Neagu,Clinica Sante - Unirii,25,180.0
+215,Endocrinology,0.72,0.3,0.4,0.3,"thyroid_disorder, hormonal_imbalance, obesity",Dr. Lidia Pop,Sanador - Floreasca,30,250.0
+216,Physiotherapy,0.6,0.2,0.3,0.5,"joint_pain, previous_fractures, arthritis",Dr. Stefan Pavel,Prokinetic - Unirii,45,190.0
+217,Cardiology,0.8,0.3,0.5,0.2,"hypertension, heart_disease, cholesterol",Dr. Emilia Voicu,MedLife - Favorit,30,290.0
+218,Diabetology,0.78,0.2,0.6,0.2,"diabetes, obesity, diet",Dr. Tudor Ene,Regina Maria - Obor,35,270.0
+219,Pulmonology,0.74,0.2,0.5,0.3,"asthma, lung_disease, smoker",Dr. Ioana Toma,Sanador - Drumul Taberei,30,250.0
+220,Rheumatology,0.68,0.2,0.5,0.3,"osteoporosis, arthritis, joint_pain",Dr. Cristian Rusu,Medicover - Militari,35,240.0
+221,Dermatology,0.65,0.1,0.3,0.6,"hormonal_imbalance, vitamins_deficit",Dr. Andra Ene,Regina Maria - Ploiesti,25,230.0
+222,Allergology,0.7,0.1,0.4,0.5,"asthma, lung_disease, skin_allergy",Dr. Bogdan Chiriac,MedLife - Orhideea,30,240.0
+223,General Check-up,0.55,0.3,0.2,0.5,cold_start,Dr. Diana Lungu,Regina Maria - Unirii,30,190.0
+224,Preventive Medicine,0.6,0.3,0.3,0.4,"lifestyle, cold",Dr. Mihai Pavel,Medicover - Berceni,30,210.0
+225,Laboratory Tests,0.5,0.1,0.4,0.5,cold_start,Dr. Ana Cernat,Clinica Sante - Titan,20,150.0
+227,Gastroenterology,0.7,0.2,0.5,0.3,"liver_disease, alcohol_consumption, obesity",Dr. Victor Popescu,MedLife - Obor,35,250.0
+228,Ophthalmology,0.6,0.2,0.2,0.6,"diabetes, hypertension, headaches",Dr. George Enache,Sanador - Universitate,25,200.0
+229,ENT,0.65,0.2,0.3,0.5,"smoker, asthma, sinusitis",Dr. Adriana Petcu,Regina Maria - Baneasa,30,230.0
+230,Dental Check-up,0.55,0.1,0.2,0.7,"cold_start, smoker, alcohol_consumption",Dr. Ioan Dumitru,Dentaplus - Universitate,30,180.0
+231,Sports Medicine,0.6,0.2,0.3,0.5,"activity_level, joint_pain, obesity",Dr. Maria Tofan,MedLife - Aviatiei,35,200.0
+232,Psychology,0.65,0.2,0.3,0.5,"stress_level, anxiety, insomnia",Dr. Alina Vasilescu,MindCare - Unirii,50,220.0
+233,General Annual Check-up,0.6,0.3,0.2,0.5,"cold_start, preventive",Dr. Bogdan Ene,MedLife - Victoriei,30,200.0
+234,Lifestyle Counseling,0.55,0.2,0.3,0.5,"alcohol_consumption, smoker, stress_level",Dr. Cristina Marin,Medicover - Dorobanti,30,210.0
+235,Immunology,0.7,0.2,0.4,0.4,"chronic_disease, vitamins_deficit, stress_level",Dr. Andreea Petrescu,Regina Maria - Cotroceni,35,250.0
+236,General Check-up,0.5,0.3,0.2,0.5,cold_start,Dr. Ionut Pavel,Clinica Sante - Pipera,25,170.0
+237,Blood Tests Panel,0.55,0.1,0.4,0.5,"cold_start, metabolic",Dr. Teodora Neagu,MedLife - Titan,15,160.0
