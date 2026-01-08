@@ -26,17 +26,66 @@ def is_chronic_condition(col):
     chronic_keywords = [
         "diabetes", "heart_disease", "hypertension", "cancer", "kidney_disease",
         "liver_disease", "arthritis", "osteoporosis", "thyroid_disorder", "joint_pain",
-        "hormone_imbalance", "lung_disease", "headaches", "asthma", "epilepsy"
+        "hormonal_imbalance", "lung_disease", "headaches", "asthma", "epilepsy"
     ]
     return any(k in col.lower() for k in chronic_keywords)
 
 
 def is_lifestyle_factor(col):
     lifestyle_keywords = [
-        "smoker", "alcohol_consumption", "activity_level", "stress_level", "obesity",
+        "smoker", "alcohol_consumption", "stress_level", "obesity",
         "previous_fractures"
     ]
     return any(k in col.lower() for k in lifestyle_keywords)
+
+
+def get_field_value(value):
+    """
+    Convert field value to numeric score:
+    - 0 -> 0.0a
+    - 1 -> 0.5 (mild/present)
+    - 2 -> 1.0 (severe/strongly present)
+    - "true", "yes" -> 1.0
+    - "false", "none" -> 0.0
+    - other -> 0.0
+    """
+    val_str = str(value).lower().strip()
+    
+    # Handle numeric values
+    try:
+        num_val = int(float(val_str))
+        if num_val == 0:
+            return 0.0
+        elif num_val == 1:
+            return 0.5
+        elif num_val == 2:
+            return 1.0
+        else:
+            return 0.0
+    except (ValueError, TypeError):
+        pass
+    
+    # Handle boolean/string values
+    if val_str in ["true", "yes"]:
+        return 1.0
+    elif val_str in ["false", "none", ""]:
+        return 0.0
+    
+    return 0.0
+
+
+def has_condition(value):
+    """
+    Check if a field indicates a condition is present (non-zero).
+    Returns True for 1, 2, "true", "yes", False for 0, "false", "none".
+    """
+    val_str = str(value).lower().strip()
+    
+    try:
+        num_val = int(float(val_str))
+        return num_val > 0
+    except (ValueError, TypeError):
+        return val_str in ["true", "yes"]
 
 
 def compute_score(patient, appointment):
@@ -58,19 +107,27 @@ def compute_score(patient, appointment):
     # Age factor: older patients get slightly higher weight for preventive care
     age_factor = min(patient.get("age", 0) / 100, 1.0)
 
-    # Chronic condition factor
+    # Chronic condition factor - weighted by severity (0=0, 1=0.5, 2=1.0)
+    # Sum all matching condition scores and normalize by max possible (all conditions = 2)
     chronic_cols = [c for c in patient.keys() if is_chronic_condition(c)]
-    chronic_matches = sum(
-        1 for c in chronic_cols if str(patient[c]).lower() in ["1", "2", "true", "yes"] and c.lower() in recommended_set
+    matching_chronic = [c for c in chronic_cols if c.lower() in recommended_set]
+    chronic_score = sum(
+        get_field_value(patient[c]) for c in matching_chronic
     )
-    chronic_ratio = min(chronic_matches, 1)
+    # Normalize: divide by max possible score (all matching conditions with value 2)
+    max_chronic_score = len(matching_chronic) * 1.0 if matching_chronic else 1.0
+    chronic_ratio = min(chronic_score / max_chronic_score, 1.0) if max_chronic_score > 0 else 0.0
 
-    # Lifestyle factor
+    # Lifestyle factor - weighted by severity (0=0, 1=0.5, 2=1.0)
+    # Sum all matching condition scores and normalize by max possible (all conditions = 2)
     lifestyle_cols = [c for c in patient.keys() if is_lifestyle_factor(c)]
-    lifestyle_matches = sum(
-        1 for c in lifestyle_cols if str(patient[c]).lower() in ["1", "2", "true", "yes"] and c.lower() in recommended_set
+    matching_lifestyle = [c for c in lifestyle_cols if c.lower() in recommended_set]
+    lifestyle_score = sum(
+        get_field_value(patient[c]) for c in matching_lifestyle
     )
-    lifestyle_ratio = min(lifestyle_matches, 1)
+    # Normalize: divide by max possible score (all matching conditions with value 2)
+    max_lifestyle_score = len(matching_lifestyle) * 1.0 if matching_lifestyle else 1.0
+    lifestyle_ratio = min(lifestyle_score / max_lifestyle_score, 1.0) if max_lifestyle_score > 0 else 0.0
 
     # BMI factor: higher BMI increases relevance for certain appointments
     bmi = float(patient.get("BMI", 25))
@@ -108,7 +165,7 @@ def get_recommendations(patient_id: int):
 
     # Detect cold start (no major data)
     has_data = any(
-        str(patient[c]).lower() in ["1", "2", "true", "yes"]
+        has_condition(patient[c])
         for c in patient.keys() if is_chronic_condition(c) or is_lifestyle_factor(c)
     )
     if not has_data:
