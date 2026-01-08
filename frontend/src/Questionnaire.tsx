@@ -36,17 +36,82 @@ function Questionnaire() {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitMessage, setSubmitMessage] = useState("");
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const validateField = (name: string, value: any): string => {
+        if (name === "age") {
+            const age = parseInt(value);
+            if (isNaN(age) || age < 0 || age > 120) {
+                return "Age must be between 0 and 120";
+            }
+        } else if (name === "BMI") {
+            const bmi = parseFloat(value);
+            if (isNaN(bmi) || bmi < 10 || bmi > 50) {
+                return "BMI should be between 10 and 50";
+            }
+        } else if (name === "blood_pressure") {
+            const bp = parseFloat(value);
+            if (isNaN(bp) || bp < 50 || bp > 250) {
+                return "Blood pressure should be between 50-250 mmHg";
+            }
+        } else if (name === "cholesterol") {
+            const chol = parseFloat(value);
+            if (isNaN(chol) || chol < 100 || chol > 400) {
+                return "Cholesterol should be between 100-400 mg/dL";
+            }
+        }
+        return "";
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
+        const newValue = type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
+
         setFormData((prev) => ({
             ...prev,
-            [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+            [name]: newValue,
         }));
+
+        // Validate field
+        const error = validateField(name, newValue);
+        setErrors((prev) => {
+            const newErrors = { ...prev };
+            if (error) {
+                newErrors[name] = error;
+            } else {
+                delete newErrors[name];
+            }
+            return newErrors;
+        });
+    };
+
+    const validateForm = (): boolean => {
+        const newErrors: Record<string, string> = {};
+
+        // Validate required fields
+        if (!formData.age) newErrors.age = "Age is required";
+        if (!formData.blood_pressure) newErrors.blood_pressure = "Blood pressure is required";
+        if (!formData.cholesterol) newErrors.cholesterol = "Cholesterol is required";
+        if (!formData.BMI) newErrors.BMI = "BMI is required";
+
+        // Validate all fields
+        Object.keys(formData).forEach((key) => {
+            const error = validateField(key, formData[key as keyof typeof formData]);
+            if (error) newErrors[key] = error;
+        });
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!validateForm()) {
+            setSubmitMessage("Please fix the errors in the form");
+            return;
+        }
+
         setIsSubmitting(true);
         setSubmitMessage("");
 
@@ -82,29 +147,26 @@ function Questionnaire() {
                 activity_level: parseInt(formData.activity_level),
             };
 
-            const response = await fetch("http://localhost:8000/patients", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(patientData),
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                setSubmitMessage(`Patient ${result.patient_id} added successfully! Redirecting...`);
-                setTimeout(() => {
-                    navigate("/");
-                }, 2000);
-            } else {
-                const error = await response.json();
-                setSubmitMessage(`Error: ${error.detail || "Failed to add patient"}`);
-            }
+            const { api } = await import("./api");
+            const result = await api.addPatient(patientData);
+            setSubmitMessage(`Patient ${result.patient_id} added successfully! Redirecting...`);
+            setTimeout(() => {
+                navigate("/", { state: { newPatientId: result.patient_id } });
+            }, 2000);
         } catch (error) {
             setSubmitMessage(`Error: ${error instanceof Error ? error.message : "Failed to submit"}`);
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    const calculateProgress = (): number => {
+        const required = ['age', 'sex', 'blood_pressure', 'cholesterol', 'BMI', 'activity_level'];
+        const filled = required.filter(field => {
+            const value = formData[field as keyof typeof formData];
+            return value !== "" && value !== null && value !== undefined;
+        }).length;
+        return Math.round((filled / required.length) * 100);
     };
 
     return (
@@ -113,6 +175,16 @@ function Questionnaire() {
             <button onClick={() => navigate("/")} className="back-button">
                 ← Back to Dashboard
             </button>
+
+            <div className="progress-bar-container">
+                <div className="progress-bar">
+                    <div
+                        className="progress-fill"
+                        style={{ width: `${calculateProgress()}%` }}
+                    ></div>
+                </div>
+                <span className="progress-text">{calculateProgress()}% Complete</span>
+            </div>
 
             <form onSubmit={handleSubmit} className="questionnaire-form">
                 {/* Basic Information */}
@@ -129,7 +201,9 @@ function Questionnaire() {
                                 required
                                 min="0"
                                 max="120"
+                                className={errors.age ? "error-input" : ""}
                             />
+                            {errors.age && <span className="error-text">{errors.age}</span>}
                         </label>
                         <label>
                             Sex: *
@@ -155,7 +229,9 @@ function Questionnaire() {
                                 required
                                 step="0.1"
                                 min="0"
+                                className={errors.blood_pressure ? "error-input" : ""}
                             />
+                            {errors.blood_pressure && <span className="error-text">{errors.blood_pressure}</span>}
                         </label>
                         <label>
                             Cholesterol (mg/dL): *
@@ -167,7 +243,9 @@ function Questionnaire() {
                                 required
                                 step="0.1"
                                 min="0"
+                                className={errors.cholesterol ? "error-input" : ""}
                             />
+                            {errors.cholesterol && <span className="error-text">{errors.cholesterol}</span>}
                         </label>
                         <label>
                             BMI: *
@@ -179,7 +257,9 @@ function Questionnaire() {
                                 required
                                 step="0.1"
                                 min="0"
+                                className={errors.BMI ? "error-input" : ""}
                             />
+                            {errors.BMI && <span className="error-text">{errors.BMI}</span>}
                         </label>
                         <label>
                             Activity Level (1-5): *

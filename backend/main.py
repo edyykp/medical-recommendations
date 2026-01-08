@@ -1,8 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 import pandas as pd
 import re
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 
 app = FastAPI()
@@ -25,33 +25,40 @@ appointments = appointments_df.dropna(subset=["appointment_id"]).to_dict(orient=
 
 # --- Pydantic models ---
 class NewPatient(BaseModel):
-    age: int
-    sex: str
-    diabetes: int = 0
-    heart_disease: int = 0
-    cancer: str = "none"
+    age: int = Field(..., ge=0, le=120, description="Age must be between 0 and 120")
+    sex: str = Field(..., description="Sex must be M or F")
+    
+    @field_validator('sex')
+    @classmethod
+    def validate_sex(cls, v):
+        if v.upper() not in ['M', 'F']:
+            raise ValueError('Sex must be M or F')
+        return v.upper()
+    diabetes: int = Field(default=0, ge=0, le=2)
+    heart_disease: int = Field(default=0, ge=0, le=2)
+    cancer: str = Field(default="none")
     hypertension: bool = False
     obesity: bool = False
-    kidney_disease: int = 0
-    liver_disease: int = 0
+    kidney_disease: int = Field(default=0, ge=0, le=2)
+    liver_disease: int = Field(default=0, ge=0, le=2)
     osteoporosis: bool = False
     arthritis: bool = False
     joint_pain: bool = False
     previous_fractures: bool = False
-    stress_level: int = 0
-    thyroid_disorder: str = "none"
+    stress_level: int = Field(default=0, ge=0, le=2)
+    thyroid_disorder: str = Field(default="none")
     hormonal_imbalance: bool = False
-    vitamins_deficit: str = "none"
-    lung_disease: int = 0
-    alcohol_consumption: int = 0
+    vitamins_deficit: str = Field(default="none")
+    lung_disease: int = Field(default=0, ge=0, le=2)
+    alcohol_consumption: int = Field(default=0, ge=0, le=2)
     headaches: bool = False
     asthma: bool = False
     epilepsy: bool = False
-    blood_pressure: float
-    smoker: int = 0
-    cholesterol: float
-    BMI: float
-    activity_level: int
+    blood_pressure: float = Field(..., ge=50, le=250, description="Blood pressure must be between 50-250 mmHg")
+    smoker: int = Field(default=0, ge=0, le=2)
+    cholesterol: float = Field(..., ge=100, le=400, description="Cholesterol must be between 100-400 mg/dL")
+    BMI: float = Field(..., ge=10, le=50, description="BMI must be between 10-50")
+    activity_level: int = Field(..., ge=1, le=5, description="Activity level must be between 1-5")
 
 
 # --- Helper functions ---
@@ -225,25 +232,28 @@ def add_patient(new_patient: NewPatient):
     """Add a new patient to the CSV file"""
     global patients, patients_df
     
-    # Generate new patient_id (next available)
-    max_id = max([p["patient_id"] for p in patients]) if patients else 100
-    new_patient_id = max_id + 1
-    
-    # Convert Pydantic model to dict
-    patient_dict = new_patient.model_dump()
-    patient_dict["patient_id"] = new_patient_id
-    
-    # Add to DataFrame
-    new_row = pd.DataFrame([patient_dict])
-    patients_df = pd.concat([patients_df, new_row], ignore_index=True)
-    
-    # Save to CSV
-    patients_df.to_csv("patients.csv", index=False)
-    
-    # Reload patients list
-    patients = patients_df.to_dict(orient="records")
-    
-    return {"patient_id": new_patient_id, "message": "Patient added successfully"}
+    try:
+        # Generate new patient_id (next available)
+        max_id = max([p["patient_id"] for p in patients]) if patients else 100
+        new_patient_id = max_id + 1
+        
+        # Convert Pydantic model to dict
+        patient_dict = new_patient.model_dump()
+        patient_dict["patient_id"] = new_patient_id
+        
+        # Add to DataFrame
+        new_row = pd.DataFrame([patient_dict])
+        patients_df = pd.concat([patients_df, new_row], ignore_index=True)
+        
+        # Save to CSV
+        patients_df.to_csv("patients.csv", index=False)
+        
+        # Reload patients list
+        patients = patients_df.to_dict(orient="records")
+        
+        return {"patient_id": new_patient_id, "message": "Patient added successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to add patient: {str(e)}")
 
 
 @app.get("/recommendations/{patient_id}")

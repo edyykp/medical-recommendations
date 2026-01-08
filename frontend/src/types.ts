@@ -3,6 +3,9 @@ export type Recommendation = {
   specialty: string;
   price: string;
   duration: string;
+  score?: number;
+  clinic?: string;
+  recommended_for?: string;
 };
 
 export type UserProfile = {
