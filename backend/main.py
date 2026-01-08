@@ -26,7 +26,8 @@ def is_chronic_condition(col):
     chronic_keywords = [
         "diabetes", "heart_disease", "hypertension", "cancer", "kidney_disease",
         "liver_disease", "arthritis", "osteoporosis", "thyroid_disorder", "joint_pain",
-        "hormonal_imbalance", "lung_disease", "headaches", "asthma", "epilepsy"
+        "hormonal_imbalance", "lung_disease", "headaches", "asthma", "epilepsy",
+        "vitamins_deficit"
     ]
     return any(k in col.lower() for k in chronic_keywords)
 
@@ -134,12 +135,39 @@ def compute_score(patient, appointment):
     bmi_factor = min(max((bmi - 22) / 10, 0), 1)  # normalize roughly between 0–1
 
     # Blood pressure factor
+    # Medical thresholds: Normal: <120, Elevated: 120-129, High Stage 1: 130-139, High Stage 2: >=140
     bp = float(patient.get("blood_pressure", 120))
-    bp_factor = min(max((bp - 120) / 40, 0), 1)
+    if bp >= 140:
+        bp_factor = 1.0  # High Stage 2 - maximum urgency
+    elif bp >= 130:
+        bp_factor = 0.7 + (bp - 130) / 10 * 0.3  # High Stage 1: 0.7 to 1.0
+    elif bp >= 120:
+        bp_factor = (bp - 120) / 10 * 0.7  # Elevated: 0.0 to 0.7
+    else:
+        bp_factor = 0.0  # Normal - no factor
 
     # Activity level factor (lower activity increases certain appointment relevance)
     activity = int(patient.get("activity_level", 3))  # assuming scale 1-5
     activity_factor = (6 - activity) / 5  # higher if activity is low
+
+    # Cholesterol factor: higher cholesterol increases relevance for all appointments
+    # Medical thresholds: Normal: <200, Borderline High: 200-239, High: >=240
+    cholesterol = float(patient.get("cholesterol", 200))
+    if cholesterol >= 240:
+        cholesterol_factor = 1.0  # High - maximum urgency
+    elif cholesterol >= 200:
+        cholesterol_factor = 0.5 + (cholesterol - 200) / 40 * 0.5  # Borderline: 0.5 to 1.0
+    else:
+        cholesterol_factor = 0.0  # Normal - no factor
+
+    # Sex factor: check if appointment is gender-specific and matches patient sex
+    # This is a binary factor (0 or 1) for gender-specific conditions
+    sex = str(patient.get("sex", "")).upper()
+    sex_factor = 0.0
+    if "cancer" in recommended_set and sex == "F":
+        # Breast cancer screening is more relevant for females
+        if "breast" in recommended_raw.lower():
+            sex_factor = 1.0
 
     # Weighted scoring
     score += float(appointment.get("weight_age", 0.2)) * age_factor
@@ -148,6 +176,8 @@ def compute_score(patient, appointment):
     score += 0.05 * bmi_factor
     score += 0.05 * bp_factor
     score += 0.05 * activity_factor
+    score += 0.05 * cholesterol_factor
+    score += 0.03 * sex_factor  # Smaller weight for gender-specific factors
 
     return score
 
