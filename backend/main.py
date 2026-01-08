@@ -2,6 +2,8 @@ from fastapi import FastAPI
 import pandas as pd
 import re
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import Optional
 
 app = FastAPI()
 
@@ -19,6 +21,37 @@ appointments_df = pd.read_csv("appointments.csv")
 
 patients = patients_df.to_dict(orient="records")
 appointments = appointments_df.dropna(subset=["appointment_id"]).to_dict(orient="records")
+
+
+# --- Pydantic models ---
+class NewPatient(BaseModel):
+    age: int
+    sex: str
+    diabetes: int = 0
+    heart_disease: int = 0
+    cancer: str = "none"
+    hypertension: bool = False
+    obesity: bool = False
+    kidney_disease: int = 0
+    liver_disease: int = 0
+    osteoporosis: bool = False
+    arthritis: bool = False
+    joint_pain: bool = False
+    previous_fractures: bool = False
+    stress_level: int = 0
+    thyroid_disorder: str = "none"
+    hormonal_imbalance: bool = False
+    vitamins_deficit: str = "none"
+    lung_disease: int = 0
+    alcohol_consumption: int = 0
+    headaches: bool = False
+    asthma: bool = False
+    epilepsy: bool = False
+    blood_pressure: float
+    smoker: int = 0
+    cholesterol: float
+    BMI: float
+    activity_level: int
 
 
 # --- Helper functions ---
@@ -185,6 +218,32 @@ def compute_score(patient, appointment):
 @app.get("/patients")
 def get_patients():
     return patients
+
+
+@app.post("/patients")
+def add_patient(new_patient: NewPatient):
+    """Add a new patient to the CSV file"""
+    global patients, patients_df
+    
+    # Generate new patient_id (next available)
+    max_id = max([p["patient_id"] for p in patients]) if patients else 100
+    new_patient_id = max_id + 1
+    
+    # Convert Pydantic model to dict
+    patient_dict = new_patient.model_dump()
+    patient_dict["patient_id"] = new_patient_id
+    
+    # Add to DataFrame
+    new_row = pd.DataFrame([patient_dict])
+    patients_df = pd.concat([patients_df, new_row], ignore_index=True)
+    
+    # Save to CSV
+    patients_df.to_csv("patients.csv", index=False)
+    
+    # Reload patients list
+    patients = patients_df.to_dict(orient="records")
+    
+    return {"patient_id": new_patient_id, "message": "Patient added successfully"}
 
 
 @app.get("/recommendations/{patient_id}")
