@@ -104,9 +104,6 @@ function Dashboard() {
     return (
         <div className="app-container">
             <h2>Medical Appointment Recommender</h2>
-            <button onClick={() => navigate("/questionnaire")} className="add-patient-button">
-                + Add New Patient
-            </button>
 
             {error && !loadingPatients && (
                 <div className="error-banner">
@@ -137,6 +134,9 @@ function Dashboard() {
                         ))}
                     </select>
                 )}
+                <button onClick={() => navigate("/questionnaire")} className="add-patient-button">
+                    + Add New Patient
+                </button>
             </div>
 
             {/* Two-column layout */}

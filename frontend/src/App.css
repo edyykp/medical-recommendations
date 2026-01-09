@@ -78,6 +78,24 @@ button:hover {
 
 .patient-selector {
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.patient-selector label {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.patient-selector select {
+  flex: 1;
+  min-width: 200px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
 }
 
 .conditions-grid {
@@ -254,7 +272,8 @@ button:hover {
 
 .add-patient-button {
   background: #28a745;
-  float: right;
+  margin: 0;
+  white-space: nowrap;
 }
 
 .add-patient-button:hover {
@@ -449,10 +468,18 @@ button:hover {
     grid-template-columns: 1fr;
   }
   
-  .add-patient-button {
-    float: none;
+  .patient-selector {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .patient-selector select {
     width: 100%;
-    margin-bottom: 15px;
+  }
+
+  .add-patient-button {
+    width: 100%;
+    margin-top: 10px;
   }
 
   .recommendations-header {
