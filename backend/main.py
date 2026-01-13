@@ -290,6 +290,8 @@ def get_recommendations(patient_id: int):
     used_specialties = set()
 
     for a, s in sorted(scored, key=lambda x: x[1], reverse=True):
+        if a["specialty"] == "Gynaecology" and patient.get("sex", "").upper() == "M":
+            continue
         if a["specialty"] not in used_specialties:
             final.append((a, s))
             used_specialties.add(a["specialty"])

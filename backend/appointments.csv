@@ -5,12 +5,12 @@ appointment_id,specialty,base_score,weight_age,weight_chronic,weight_lifestyle,r
 204,Orthopedics,0.65,0.2,0.5,0.3,"arthritis, joint_pain, previous_fractures",Dr. Mihai Ionescu,Regina Maria - Baneasa,30,230.0
 205,Internal Medicine,0.6,0.4,0.3,0.3,"cold_start, stress_level, liver_disease",Dr. Cristina Stoica,MedLife - Titan,30,210.0
 206,Pulmonology,0.7,0.2,0.5,0.3,"lung_disease, asthma, smoker",Dr. Florin Petrescu,Regina Maria - Dorobanti,30,250.0
-207,Oncology,0.9,0.2,0.6,0.2,"cancer, chronic_disease, fatigue",Dr. Alina Georgescu,Sanador - Balcescu,45,320.0
+207,Oncology,0.8,0.2,0.6,0.2,"cancer, chronic_disease, fatigue",Dr. Alina Georgescu,Sanador - Balcescu,45,320.0
 208,Nephrology,0.75,0.3,0.6,0.1,"kidney_disease, hypertension",Dr. Paul Cretu,Medicover - Pipera,40,270.0
 209,Hepatology,0.65,0.2,0.5,0.3,"liver_disease, alcohol_consumption",Dr. Irina Balan,Regina Maria - Cotroceni,30,240.0
 210,Rheumatology,0.7,0.3,0.5,0.2,"arthritis, joint_pain, osteoporosis",Dr. Alexandru Ilie,Sanador - Dorobanti,35,260.0
-211,Neurology,0.75,0.2,0.5,0.3,"headaches, epilepsy, stress_level",Dr. Laura Matei,MedLife - Universitate,30,280.0
-212,Psychiatry,0.7,0.2,0.3,0.5,"stress_level, hormonal_imbalance, insomnia",Dr. Radu Serban,Regina Maria - Primaverii,40,250.0
+211,Neurology,0.7,0.2,0.5,0.3,"headaches, epilepsy, stress_level",Dr. Laura Matei,MedLife - Universitate,30,280.0
+212,Gynaecology,0.7,0.2,0.3,0.5,"stress_level, hormonal_imbalance, preventive",Dr. Radu Serban,Regina Maria - Primaverii,40,250.0
 213,Nutrition,0.6,0.1,0.4,0.5,"obesity, diabetes, lifestyle",Dr. Ioana Botez,Medicover - Aviatiei,30,200.0
 214,Family Medicine,0.5,0.3,0.2,0.5,"cold_start, vitamins_deficit, stress_level",Dr. Sorin Neagu,Clinica Sante - Unirii,25,180.0
 215,Endocrinology,0.72,0.3,0.4,0.3,"thyroid_disorder, hormonal_imbalance, obesity",Dr. Lidia Pop,Sanador - Floreasca,30,250.0
@@ -29,7 +29,7 @@ appointment_id,specialty,base_score,weight_age,weight_chronic,weight_lifestyle,r
 229,ENT,0.65,0.2,0.3,0.5,"smoker, asthma, sinusitis",Dr. Adriana Petcu,Regina Maria - Baneasa,30,230.0
 230,Dental Check-up,0.55,0.1,0.2,0.7,"cold_start, smoker, alcohol_consumption",Dr. Ioan Dumitru,Dentaplus - Universitate,30,180.0
 231,Sports Medicine,0.6,0.2,0.3,0.5,"activity_level, joint_pain, obesity",Dr. Maria Tofan,MedLife - Aviatiei,35,200.0
-232,Psychology,0.65,0.2,0.3,0.5,"stress_level, anxiety, insomnia",Dr. Alina Vasilescu,MindCare - Unirii,50,220.0
+232,Psychology,0.7,0.2,0.3,0.5,"stress_level, anxiety, insomnia",Dr. Alina Vasilescu,MindCare - Unirii,50,220.0
 233,General Annual Check-up,0.6,0.3,0.2,0.5,"cold_start, preventive",Dr. Bogdan Ene,MedLife - Victoriei,30,200.0
 234,Lifestyle Counseling,0.55,0.2,0.3,0.5,"alcohol_consumption, smoker, stress_level",Dr. Cristina Marin,Medicover - Dorobanti,30,210.0
 235,Immunology,0.7,0.2,0.4,0.4,"chronic_disease, vitamins_deficit, stress_level",Dr. Andreea Petrescu,Regina Maria - Cotroceni,35,250.0

@@ -21,3 +21,4 @@ patient_id,age,sex,diabetes,heart_disease,cancer,hypertension,obesity,kidney_dis
 120,35,F,0,0,none,False,False,0,0,False,False,False,False,1,none,False,none,0,1,False,False,False,116.0,0,170.0,22.0,5
 121,26,M,0,0,none,False,False,0,0,False,False,False,False,2,none,False,none,0,1,True,True,True,120.0,2,190.0,25.0,3
 122,25,F,0,0,breast,True,False,1,2,True,False,False,False,1,none,False,B12,2,0,True,False,False,70.0,0,220.0,15.0,5
+123,25,F,0,0,none,False,False,0,0,False,False,False,False,1,none,True,"D,B12",0,1,False,False,False,71.0,1,154.0,19.2,4
